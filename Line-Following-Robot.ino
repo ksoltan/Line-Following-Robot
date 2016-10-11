@@ -19,45 +19,33 @@ void setup() {
 }
 
 void loop() {
-  int portValue = analogRead(port);
-  int starboardValue = analogRead(starboard);
-  if (isPortOverTape(portValue)) {
+  // Assume that only one out of the two sensors in over the tape at any point
+  if (isPortOverTape()) {
     portMotor->run(RELEASE);
     starboardMotor->run(FORWARD);
-    //do something
   }
-  if (isStarboardOverTape(starboardValue)) {
+  else if (isStarboardOverTape()) {
     starboardMotor->run(RELEASE);
     portMotor->run(FORWARD);
-    //do the other thing
-  }
-  
-  // If neither of the sensors are over tape,
-  // continue straight and true
-  if (!isOffCoursePort && !isOffCourseStarboard){
+  } else if (!isOffCoursePort && !isOffCourseStarboard){
     portMotor->run(FORWARD);
     starboardMotor->run(FORWARD);
     // make sure both motors are going at same power
   }
 }
 
-boolean isPortOverTape(int sensorValue){
-  boolean sensorOverTape = sensorValue > 500;
-  if(sensorOverTape){
-    isOffCoursePort = true;
-  }else{
-    isOffCoursePort = false;
-  }
-  return sensorOverTape;
+/*Checks if the port sensor is over the tape.
+If not, sets the offCourse flag to false. If off tape, sets the flag to true.
+Returns isOffCoursePort*/
+boolean isPortOverTape(){
+  int portValue = analogRead(port);
+  isOffCoursePort = portValue > 500;
+  return isOffCoursePort;
 }
 
-boolean isStarboardOverTape(int sensorValue){
-  boolean sensorOverTape = sensorValue > 500;
-  if(sensorOverTape){
-    isOffCourseStarboard = true;
-  }else{
-    isOffCourseStarboard = false;
-  }
-  return sensorOverTape;
+boolean isStarboardOverTape(){
+  int starboardValue = analogRead(starboard);
+  isOffCourseStarboard = starboardValue > 500;
+  return isOffCourseStarboard;
 }
 
